@@ -4,7 +4,7 @@
 ;;; Commentary:
 ;; See https://github.com/porras/evil-ruby-text-objects
 ;;; Homepage: https://github.com/porras/evil-ruby-text-objects
-;; Package-Requires: ((emacs "25") (evil) (enh-ruby-mode) (bind-key))
+;; Package-Requires: ((emacs "25") (evil "0") (enh-ruby-mode "0") (bind-key "0"))
 ;;; Code:
 
 
@@ -14,6 +14,7 @@
 
 (defun evil-ruby-text-objects--evil-range (count type keyword &optional inner)
   (save-excursion
+    (enh-ruby-beginning-of-block)
     (dotimes (i count)
       (while (not (looking-at keyword))
         (when (bobp) (user-error "Can't find current %s opening" keyword))
@@ -29,7 +30,7 @@
       (skip-syntax-forward " ")
       (exchange-point-and-mark)
       (search-backward "end"))
-    (evil-range (region-beginning) (region-end) type :expanded t)))
+    (evil-text-object-make-linewise (evil-range (region-beginning) (region-end) type :expanded t))))
 
 (defmacro evil-ruby-text-objects--define-object (object &optional keyword)
   "Defines an inner and an outer object. Accepted parameters are the object name (a string) and optionally a keyword (string or regexp, defaults to the object name). It defines two evil text objects, evil-a-ruby-<object> (outer), and evil-inner-ruby-<object> (inner)."
@@ -49,7 +50,7 @@
 (evil-ruby-text-objects--define-object "module")
 (evil-ruby-text-objects--define-object "namespace" (regexp-opt '("class" "module")))
 (evil-ruby-text-objects--define-object "block" "do")
-(evil-ruby-text-objects--define-object "conditional" (regexp-opt '("if" "unless")))
+(evil-ruby-text-objects--define-object "conditional" (regexp-opt '("if" "unless" "case")))
 (evil-ruby-text-objects--define-object "begin")
 
 ;;;###autoload
@@ -79,3 +80,5 @@
 (add-hook 'enh-ruby-mode-hook 'evil-ruby-text-objects/bind-keys)
 
 (provide 'evil-ruby-text-objects)
+
+;;; evil-ruby-text-objects.el ends here
