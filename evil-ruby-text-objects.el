@@ -14,7 +14,9 @@
 
 (defun evil-ruby-text-objects--evil-range (count type keyword &optional inner)
   (save-excursion
-    (enh-ruby-beginning-of-block)
+    (skip-syntax-forward " ")
+    (unless (looking-at keyword)
+      (enh-ruby-beginning-of-block))
     (dotimes (i count)
       (while (not (looking-at keyword))
         (when (bobp) (user-error "Can't find current %s opening" keyword))

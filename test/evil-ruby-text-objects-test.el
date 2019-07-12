@@ -22,6 +22,14 @@
    ("yarm")
    (should-have-copied "def m" ":hey" "end")))
 
+(ert-deftest test-outer-method-on-def ()
+  "Select a whole method starting on the def keyword"
+
+  (with-ruby-sample-file
+   (re-search-forward ":hey") (forward-line -1) (beginning-of-line)
+   ("yarm")
+   (should-have-copied "def m" ":hey" "end")))
+
 (ert-deftest test-inner-method ()
   "Select the contents of a method"
 
