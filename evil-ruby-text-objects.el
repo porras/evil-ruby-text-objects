@@ -1,10 +1,10 @@
 ;; -*- lexical-binding: t -*-
-;;; evil-ruby-text-objects.el --- Defines  text objects to operate over different Ruby constructs
+;;; evil-ruby-text-objects.el --- Evil text objects for Ruby code
 ;;; Version: 0.1
 ;;; Commentary:
 ;; See https://github.com/porras/evil-ruby-text-objects
 ;;; Homepage: https://github.com/porras/evil-ruby-text-objects
-;; Package-Requires: ((emacs "25") (evil "0") (enh-ruby-mode "0") (bind-key "0"))
+;; Package-Requires: ((emacs "25") (evil "1.2.0") (enh-ruby-mode "1.2.0") (bind-key "2.4"))
 ;;; Code:
 
 
@@ -56,7 +56,7 @@
 (evil-ruby-text-objects--define-object "begin")
 
 ;;;###autoload
-(defun evil-ruby-text-objects/bind-keys ()
+(defun evil-ruby-text-objects-bind-keys ()
   "Activates the key bindings for all the ruby text objects. It should be called as a major mode hook."
   (interactive)
   (dolist (keymap '(evil-operator-state-local-map evil-visual-state-local-map))
@@ -79,7 +79,7 @@
                ("irg" . evil-inner-ruby-begin))))
 
 ;;;###autoload
-(add-hook 'enh-ruby-mode-hook 'evil-ruby-text-objects/bind-keys)
+(add-hook 'enh-ruby-mode-hook 'evil-ruby-text-objects-bind-keys)
 
 (provide 'evil-ruby-text-objects)
 
