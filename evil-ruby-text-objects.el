@@ -1,5 +1,4 @@
-;; -*- lexical-binding: t -*-
-;;; evil-ruby-text-objects.el --- Evil text objects for Ruby code
+;;; evil-ruby-text-objects.el --- Evil text objects for Ruby code -*- lexical-binding: t -*-
 ;;; Version: 0.1
 ;;; Commentary:
 ;; See https://github.com/porras/evil-ruby-text-objects
@@ -35,7 +34,7 @@
     (evil-text-object-make-linewise (evil-range (region-beginning) (region-end) type :expanded t))))
 
 (defmacro evil-ruby-text-objects--define-object (object &optional keyword)
-  "Defines an inner and an outer object. Accepted parameters are the object name (a string) and optionally a keyword (string or regexp, defaults to the object name). It defines two evil text objects, evil-a-ruby-<object> (outer), and evil-inner-ruby-<object> (inner)."
+  "Defines an inner and an outer object. Accepted parameters are the OBJECT name (a string) and optionally a KEYWORD (string or regexp, defaults to the object name). It defines two evil text objects, evil-a-ruby-<OBJECT> (outer), and evil-inner-ruby-<OBJECT> (inner)."
   (let ((keyword (or keyword object))
         (outer-object (intern (concat "evil-a-ruby-" object)))
         (inner-object (intern (concat "evil-inner-ruby-" object))))
