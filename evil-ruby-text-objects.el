@@ -39,10 +39,10 @@
         (outer-object (intern (concat "evil-a-ruby-" object)))
         (inner-object (intern (concat "evil-inner-ruby-" object))))
     `(progn
-       (evil-define-text-object ,outer-object (count &optional beg end type)
+       (evil-define-text-object ,outer-object (count &rest _)
          ,(format "Select a Ruby %s." object)
          (evil-ruby-text-objects--evil-range count type ,keyword))
-       (evil-define-text-object ,inner-object (count &optional beg end type)
+       (evil-define-text-object ,inner-object (count &rest _)
          ,(format "Select the inner content of a Ruby %s." object)
          (evil-ruby-text-objects--evil-range count type ,keyword t)))))
 
