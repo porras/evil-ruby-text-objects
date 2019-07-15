@@ -12,6 +12,14 @@
 (require 'bind-key)
 
 (defun evil-ruby-text-objects--evil-range (count type keyword &optional inner)
+   "Defines a linewise ‘evil-range’ selecting the specified Ruby expression.
+COUNT: number of times it should go up the tree searching for the target
+expression (for nested expressions)
+TYPE: managed by ‘evil-range’ and passed as is
+KEYWORD: string or regexp with the keyword that marks the beginning of the
+target expression
+INNER: When t, then only the content of the expression is selected but not its
+opening or closing"
   (save-excursion
     (skip-syntax-forward " ")
     (unless (looking-at keyword)
