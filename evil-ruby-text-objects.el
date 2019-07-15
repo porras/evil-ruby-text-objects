@@ -28,7 +28,7 @@ opening or closing"
       (while (not (looking-at keyword))
         (when (bobp) (user-error "Can't find current %s opening" keyword))
         (enh-ruby-up-sexp))
-      (when (not (= i (- count 1))) ;; if it's not the last one
+      (unless (= i (- count 1)) ;; if it's not the last one
         (enh-ruby-up-sexp)))
     (set-mark (point))
     (enh-ruby-end-of-block)
@@ -86,7 +86,7 @@ opening or closing"
                ("irg" . evil-inner-ruby-begin))))
 
 ;;;###autoload
-(add-hook 'enh-ruby-mode-hook 'evil-ruby-text-objects-bind-keys)
+(add-hook 'enh-ruby-mode-hook #'evil-ruby-text-objects-bind-keys)
 
 (provide 'evil-ruby-text-objects)
 
