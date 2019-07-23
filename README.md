@@ -6,6 +6,14 @@
 
 It's inspired by [vim-ruby](https://github.com/vim-ruby/vim-ruby/blob/96d5db458f868255393fdc2732d6bef21a45c68f/doc/ft-ruby-plugin.txt#L56-L76)'s `m` text objects and also [vim-textobj-ruby](https://github.com/rhysd/vim-textobj-ruby)'s `r`/`r*`, although it doesn't work exactly the same.
 
+## Usage
+
+`M-x evil-ruby-text-objects-mode` to enable. You can automatically enable it for `enh-ruby-mode` adding this line to your config:
+
+```elisp
+(add-hook 'enh-ruby-mode-hook 'evil-ruby-text-objects-mode)
+```
+
 ## Keybindings
 
 | Keybinding | Object                                                   |

@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Keywords: languages
 ;; URL: https://github.com/porras/evil-ruby-text-objects
-;; Package-Requires: ((emacs "25") (evil "1.2.0") (enh-ruby-mode "1.2.0") (bind-key "2.4"))
+;; Package-Requires: ((emacs "25") (evil "1.2.0") (enh-ruby-mode "1.2.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -31,10 +31,9 @@
 
 (require 'evil)
 (require 'enh-ruby-mode)
-(require 'bind-key)
 
 (defun evil-ruby-text-objects--evil-range (count type keyword &optional inner)
-   "Defines a linewise ‘evil-range’ selecting the specified Ruby expression.
+  "Defines a linewise ‘evil-range’ selecting the specified Ruby expression.
 COUNT: number of times it should go up the tree searching for the target
 expression (for nested expressions)
 TYPE: managed by ‘evil-range’ and passed as is
@@ -85,30 +84,27 @@ opening or closing"
 (evil-ruby-text-objects--define-object "begin")
 
 ;;;###autoload
-(defun evil-ruby-text-objects-bind-keys ()
-  "Activates the key bindings for all the ruby text objects. It should be called as a major mode hook."
-  (interactive)
-  (dolist (keymap '(evil-operator-state-local-map evil-visual-state-local-map))
-    (bind-keys :map (symbol-value keymap)
-               ("am" . evil-a-ruby-method)
-               ("arm" . evil-a-ruby-method)
-               ("arc" . evil-a-ruby-class)
-               ("arM" . evil-a-ruby-module)
-               ("arn" . evil-a-ruby-namespace)
-               ("arb" . evil-a-ruby-block)
-               ("ari" . evil-a-ruby-conditional)
-               ("arg" . evil-a-ruby-begin)
-               ("im" . evil-inner-ruby-method)
-               ("irm" . evil-inner-ruby-method)
-               ("irc" . evil-inner-ruby-class)
-               ("irM" . evil-inner-ruby-module)
-               ("irn" . evil-inner-ruby-namespace)
-               ("irb" . evil-inner-ruby-block)
-               ("iri" . evil-inner-ruby-conditional)
-               ("irg" . evil-inner-ruby-begin))))
-
-;;;###autoload
-(add-hook 'enh-ruby-mode-hook #'evil-ruby-text-objects-bind-keys)
+(define-minor-mode evil-ruby-text-objects-mode
+  "Enables Evil keybindings for ruby text objects"
+  :keymap (make-sparse-keymap)
+  (evil-define-key '(operator visual) evil-ruby-text-objects-mode-map
+    "am" 'evil-a-ruby-method
+    "am" 'evil-a-ruby-method
+    "arm" 'evil-a-ruby-method
+    "arc" 'evil-a-ruby-class
+    "arM" 'evil-a-ruby-module
+    "arn" 'evil-a-ruby-namespace
+    "arb" 'evil-a-ruby-block
+    "ari" 'evil-a-ruby-conditional
+    "arg" 'evil-a-ruby-begin
+    "im" 'evil-inner-ruby-method
+    "irm" 'evil-inner-ruby-method
+    "irc" 'evil-inner-ruby-class
+    "irM" 'evil-inner-ruby-module
+    "irn" 'evil-inner-ruby-namespace
+    "irb" 'evil-inner-ruby-block
+    "iri" 'evil-inner-ruby-conditional
+    "irg" 'evil-inner-ruby-begin))
 
 (provide 'evil-ruby-text-objects)
 

@@ -16,6 +16,7 @@
   `(evil-test-buffer
      (insert-file-contents ,(f-join (f-dirname (f-this-file)) "sample.rb"))
      (enh-ruby-mode)
+     (evil-ruby-text-objects-mode)
      (erm-wait-for-parse)
      (font-lock-fontify-buffer)
      ,@forms))
