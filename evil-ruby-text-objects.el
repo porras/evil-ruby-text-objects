@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Keywords: languages
 ;; URL: https://github.com/porras/evil-ruby-text-objects
-;; Package-Requires: ((emacs "25") (evil "1.2.0") (enh-ruby-mode "1.2.0"))
+;; Package-Requires: ((emacs "25") (evil "1.2.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -30,7 +30,52 @@
 ;;; Code:
 
 (require 'evil)
-(require 'enh-ruby-mode)
+
+(defun evil-ruby-text-objects--oneliner-p (keyword)
+  ""
+  (string-match-p (concat "^\s*" keyword ".*;\s*end\s*$") (thing-at-point 'line)))
+
+(defun evil-ruby-text-objects--ruby-mode-mark (count keyword)
+  ""
+  (if (evil-ruby-text-objects--oneliner-p keyword)
+      (evil-ruby-text-objects--ruby-mode-mark-oneliner)
+    (evil-ruby-text-objects--ruby-mode-mark-multiline count keyword)))
+
+(defun evil-ruby-text-objects--ruby-mode-mark-multiline (count keyword)
+  ""
+  (skip-syntax-forward " ")
+  (unless (looking-at keyword)
+    (ruby-beginning-of-block)
+    (re-search-forward "do" (line-end-position) t))
+  (dotimes (i count)
+    (while (not (looking-at keyword))
+      (when (bobp) (user-error "Can't find current %s opening" keyword))
+      (backward-up-list))
+    (unless (= i (- count 1)) ;; if it's not the last one
+      (backward-up-list)))
+  (set-mark (point))
+  (ruby-end-of-block)
+  (when (looking-at "end") (evil-forward-word-begin)))
+
+(defun evil-ruby-text-objects--ruby-mode-mark-oneliner ()
+  ""
+  (beginning-of-line-text)
+  (set-mark (point))
+  (end-of-line))
+
+(defun evil-ruby-text-objects--enh-ruby-mode-mark (count keyword)
+  ""
+  (skip-syntax-forward " ")
+  (unless (looking-at keyword)
+    (enh-ruby-beginning-of-block))
+  (dotimes (i count)
+    (while (not (looking-at keyword))
+      (when (bobp) (user-error "Can't find current %s opening" keyword))
+      (enh-ruby-up-sexp))
+    (unless (= i (- count 1)) ;; if it's not the last one
+      (enh-ruby-up-sexp)))
+  (set-mark (point))
+  (enh-ruby-end-of-block))
 
 (defun evil-ruby-text-objects--evil-range (count type keyword &optional inner)
   "Defines a linewise ‘evil-range’ selecting the specified Ruby expression.
@@ -42,24 +87,15 @@ target expression
 INNER: When t, then only the content of the expression is selected but not its
 opening or closing"
   (save-excursion
-    (skip-syntax-forward " ")
-    (unless (looking-at keyword)
-      (enh-ruby-beginning-of-block))
-    (dotimes (i count)
-      (while (not (looking-at keyword))
-        (when (bobp) (user-error "Can't find current %s opening" keyword))
-        (enh-ruby-up-sexp))
-      (unless (= i (- count 1)) ;; if it's not the last one
-        (enh-ruby-up-sexp)))
-    (set-mark (point))
-    (enh-ruby-end-of-block)
-    (exchange-point-and-mark)
+    (cond ((eq major-mode 'enh-ruby-mode) (evil-ruby-text-objects--enh-ruby-mode-mark count keyword))
+          ((eq major-mode 'ruby-mode) (evil-ruby-text-objects--ruby-mode-mark count keyword))
+          (t (user-error "evil-ruby-text-objects requires ruby-mode or enh-ruby-mode to be enabled")))
     (when inner
+      (search-backward "end")
+      (exchange-point-and-mark)
       (skip-chars-forward "^;\n")
       (forward-char)
-      (skip-syntax-forward " ")
-      (exchange-point-and-mark)
-      (search-backward "end"))
+      (skip-syntax-forward " "))
     (evil-text-object-make-linewise (evil-range (region-beginning) (region-end) type :expanded t))))
 
 (defmacro evil-ruby-text-objects--define-object (object &optional keyword)
