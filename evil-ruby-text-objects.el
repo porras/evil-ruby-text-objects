@@ -30,53 +30,49 @@
 ;;; Code:
 
 (require 'evil)
+(require 'eieio)
 
-(defun evil-ruby-text-objects--oneliner-p (keyword)
-  ""
-  (string-match-p (concat "^\s*" keyword ".*;\s*end\s*$") (thing-at-point 'line)))
+;; These classes abstract away the differences between ruby-mode and enh-ruby-mode. They implement four methods: up, beginning, end, and mark-special (to handle specific cases without resorting to the mode tools). The enh-ruby-mode variant just delegate to enh-ruby-mode's enh-ruby-beginning-of-block, enh-ruby-end-of-block and enh-ruby-up-sexp, and returns nil from mark-special to signal that no special case needs to be handled. The ruby-mode variants delegates to ruby-mode's ruby-beginning-of-block, ruby-end-of-block, and backward-up-list, but performing additional movements so that they behave exactly like the enh-ruby-mode's counterparts. In mark-special, it checks if we're currently in a oneline method/class/etc (a case that ruby-mode doesn't handle), and in that case it selects the line and return t to signal that the special case was handled.
+(defclass evil-ruby-text-objects--enh-ruby-mode-navigator () ())
+(defclass evil-ruby-text-objects--ruby-mode-navigator () ())
 
-(defun evil-ruby-text-objects--ruby-mode-mark (count keyword)
-  ""
-  (if (evil-ruby-text-objects--oneliner-p keyword)
-      (evil-ruby-text-objects--ruby-mode-mark-oneliner)
-    (evil-ruby-text-objects--ruby-mode-mark-multiline count keyword)))
+(cl-defmethod evil-ruby-text-objects--beginning ((navigator evil-ruby-text-objects--ruby-mode-navigator))
+  (ruby-beginning-of-block)
+  (re-search-forward "do" (line-end-position) t))
 
-(defun evil-ruby-text-objects--ruby-mode-mark-multiline (count keyword)
-  ""
-  (skip-syntax-forward " ")
-  (unless (looking-at keyword)
-    (ruby-beginning-of-block)
-    (re-search-forward "do" (line-end-position) t))
-  (dotimes (i count)
-    (while (not (looking-at keyword))
-      (when (bobp) (user-error "Can't find current %s opening" keyword))
-      (backward-up-list))
-    (unless (= i (- count 1)) ;; if it's not the last one
-      (backward-up-list)))
-  (set-mark (point))
+(cl-defmethod evil-ruby-text-objects--end ((navigator evil-ruby-text-objects--ruby-mode-navigator))
   (ruby-end-of-block)
   (when (looking-at "end") (evil-forward-word-begin)))
 
-(defun evil-ruby-text-objects--ruby-mode-mark-oneliner ()
-  ""
-  (beginning-of-line-text)
-  (set-mark (point))
-  (end-of-line))
+(cl-defmethod evil-ruby-text-objects--up ((navigator evil-ruby-text-objects--ruby-mode-navigator))
+  (backward-up-list))
 
-(defun evil-ruby-text-objects--enh-ruby-mode-mark (count keyword)
-  ""
-  (skip-syntax-forward " ")
-  (unless (looking-at keyword)
-    (enh-ruby-beginning-of-block))
-  (dotimes (i count)
-    (while (not (looking-at keyword))
-      (when (bobp) (user-error "Can't find current %s opening" keyword))
-      (enh-ruby-up-sexp))
-    (unless (= i (- count 1)) ;; if it's not the last one
-      (enh-ruby-up-sexp)))
-  (set-mark (point))
+(cl-defmethod evil-ruby-text-objects--mark-special ((navigator evil-ruby-text-objects--ruby-mode-navigator) keyword)
+  (when (string-match-p (concat "^\s*" keyword ".*;\s*end\s*$") (thing-at-point 'line))
+    (beginning-of-line-text)
+    (set-mark (point))
+    (end-of-line)
+    t))
+
+(cl-defmethod evil-ruby-text-objects--beginning ((navigator evil-ruby-text-objects--enh-ruby-mode-navigator))
+  (enh-ruby-beginning-of-block))
+
+(cl-defmethod evil-ruby-text-objects--end ((navigator evil-ruby-text-objects--enh-ruby-mode-navigator))
   (enh-ruby-end-of-block))
 
+(cl-defmethod evil-ruby-text-objects--up ((navigator evil-ruby-text-objects--enh-ruby-mode-navigator))
+  (enh-ruby-up-sexp))
+
+(cl-defmethod evil-ruby-text-objects--mark-special ((navigator evil-ruby-text-objects--enh-ruby-mode-navigator) keyword)
+  nil)
+
+(defun evil-ruby-text-objects--make-navigator ()
+  "It instantiates a navigator object suitable for the current ruby mode (`ruby-mode` or `enh-ruby-mode`)."
+  (cond ((eq major-mode 'enh-ruby-mode) (evil-ruby-text-objects--enh-ruby-mode-navigator))
+        ((eq major-mode 'ruby-mode) (evil-ruby-text-objects--ruby-mode-navigator))
+        (t (user-error "Evil-ruby-text-objects requires ruby-mode or enh-ruby-mode to be enabled"))))
+
+;; the rest of the functions are used always, and use a navigator instance, which implements the two supported ruby modes.
 (defun evil-ruby-text-objects--evil-range (count type keyword &optional inner)
   "Defines a linewise ‘evil-range’ selecting the specified Ruby expression.
 COUNT: number of times it should go up the tree searching for the target
@@ -87,9 +83,20 @@ target expression
 INNER: When t, then only the content of the expression is selected but not its
 opening or closing"
   (save-excursion
-    (cond ((eq major-mode 'enh-ruby-mode) (evil-ruby-text-objects--enh-ruby-mode-mark count keyword))
-          ((eq major-mode 'ruby-mode) (evil-ruby-text-objects--ruby-mode-mark count keyword))
-          (t (user-error "evil-ruby-text-objects requires ruby-mode or enh-ruby-mode to be enabled")))
+    (let ((navigator (evil-ruby-text-objects--make-navigator)))
+      (or (evil-ruby-text-objects--mark-special navigator keyword)
+          (progn
+            (skip-syntax-forward " ")
+            (unless (looking-at keyword)
+              (evil-ruby-text-objects--beginning navigator))
+            (dotimes (i count)
+              (while (not (looking-at keyword))
+                (when (bobp) (user-error "Can't find current %s opening" keyword))
+                (evil-ruby-text-objects--up navigator))
+              (unless (= i (- count 1)) ; if it's not the last one
+                (evil-ruby-text-objects--up navigator)))
+            (set-mark (point))
+            (evil-ruby-text-objects--end navigator))))
     (when inner
       (search-backward "end")
       (exchange-point-and-mark)
