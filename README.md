@@ -8,7 +8,13 @@ It's inspired by [vim-ruby](https://github.com/vim-ruby/vim-ruby/blob/96d5db458f
 
 ## Usage
 
-`M-x evil-ruby-text-objects-mode` to enable. You can automatically enable it for `enh-ruby-mode` adding this line to your config:
+`M-x evil-ruby-text-objects-mode` to enable. You can automatically enable it for all ruby files by adding this line to your config:
+
+```elisp
+(add-hook 'ruby-mode-hook 'evil-ruby-text-objects-mode)
+```
+
+Or, if you use `enh-ruby-mode`:
 
 ```elisp
 (add-hook 'enh-ruby-mode-hook 'evil-ruby-text-objects-mode)
@@ -49,8 +55,6 @@ end
 
 All other objects work similarly.
 
-## Note
+## Note about Ruby modes
 
-This package use [`enh-ruby-mode`](https://github.com/zenspider/enhanced-ruby-mode) functionality to do all the hard work, that is, navigating the Ruby code. This means, a) that it is quite accurate when doing it, since it uses Ruby's parser¹, b) but **it won't work if you're using regular `ruby-mode`.**
-
-¹ There is some _hacky_ code of my own for the inner variants and one line methods/classes/etc., _that_ might be not so accurate, please file an issue with an example if you see unexpected behaviour.
+This package supports both the built-in `ruby-mode` and [`enh-ruby-mode`](https://github.com/zenspider/enhanced-ruby-mode). The implementation differs slightly so if you notice some unexpected behaviour, please file an issue with an example, mentioning which of both Ruby modes you are using.
