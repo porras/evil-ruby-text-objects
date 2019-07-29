@@ -115,7 +115,7 @@ opening or closing"
           (while (not (looking-at keyword))
             (when (bobp) (user-error "Can't find current %s opening" keyword))
             (evil-ruby-text-objects--up navigator))
-          (unless (= i (- count 1)) ; if it's not the last one
+          (unless (= i (1- count)) ; if it's not the last one
             (evil-ruby-text-objects--up navigator)))
         (set-mark (point))
         (evil-ruby-text-objects--end navigator)))
