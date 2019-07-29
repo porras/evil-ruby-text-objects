@@ -56,34 +56,34 @@
 (defclass evil-ruby-text-objects--enh-ruby-mode-navigator () ())
 (defclass evil-ruby-text-objects--ruby-mode-navigator () ())
 
-(cl-defmethod evil-ruby-text-objects--beginning ((navigator evil-ruby-text-objects--ruby-mode-navigator))
+(cl-defmethod evil-ruby-text-objects--beginning ((_ evil-ruby-text-objects--ruby-mode-navigator))
   (ruby-beginning-of-block)
   (re-search-forward "do" (line-end-position) t))
 
-(cl-defmethod evil-ruby-text-objects--end ((navigator evil-ruby-text-objects--ruby-mode-navigator))
+(cl-defmethod evil-ruby-text-objects--end ((_ evil-ruby-text-objects--ruby-mode-navigator))
   (ruby-end-of-block)
   (when (looking-at "end") (evil-forward-word-begin)))
 
-(cl-defmethod evil-ruby-text-objects--up ((navigator evil-ruby-text-objects--ruby-mode-navigator))
+(cl-defmethod evil-ruby-text-objects--up ((_ evil-ruby-text-objects--ruby-mode-navigator))
   (backward-up-list))
 
-(cl-defmethod evil-ruby-text-objects--mark-special ((navigator evil-ruby-text-objects--ruby-mode-navigator) keyword)
+(cl-defmethod evil-ruby-text-objects--mark-special ((_ evil-ruby-text-objects--ruby-mode-navigator) keyword)
   (when (string-match-p (concat "^\s*" keyword ".*;\s*end\s*$") (thing-at-point 'line))
     (beginning-of-line-text)
     (set-mark (point))
     (end-of-line)
     t))
 
-(cl-defmethod evil-ruby-text-objects--beginning ((navigator evil-ruby-text-objects--enh-ruby-mode-navigator))
+(cl-defmethod evil-ruby-text-objects--beginning ((_ evil-ruby-text-objects--enh-ruby-mode-navigator))
   (enh-ruby-beginning-of-block))
 
-(cl-defmethod evil-ruby-text-objects--end ((navigator evil-ruby-text-objects--enh-ruby-mode-navigator))
+(cl-defmethod evil-ruby-text-objects--end ((_ evil-ruby-text-objects--enh-ruby-mode-navigator))
   (enh-ruby-end-of-block))
 
-(cl-defmethod evil-ruby-text-objects--up ((navigator evil-ruby-text-objects--enh-ruby-mode-navigator))
+(cl-defmethod evil-ruby-text-objects--up ((_ evil-ruby-text-objects--enh-ruby-mode-navigator))
   (enh-ruby-up-sexp))
 
-(cl-defmethod evil-ruby-text-objects--mark-special ((navigator evil-ruby-text-objects--enh-ruby-mode-navigator) keyword)
+(cl-defmethod evil-ruby-text-objects--mark-special ((_ evil-ruby-text-objects--enh-ruby-mode-navigator) _keyword)
   nil)
 
 (defun evil-ruby-text-objects--make-navigator ()
