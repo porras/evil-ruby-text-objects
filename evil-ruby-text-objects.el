@@ -32,7 +32,19 @@
 (require 'evil)
 (require 'eieio)
 
-;; These classes abstract away the differences between ruby-mode and enh-ruby-mode. They implement four methods: up, beginning, end, and mark-special (to handle specific cases without resorting to the mode tools). The enh-ruby-mode variant just delegate to enh-ruby-mode's enh-ruby-beginning-of-block, enh-ruby-end-of-block and enh-ruby-up-sexp, and returns nil from mark-special to signal that no special case needs to be handled. The ruby-mode variants delegates to ruby-mode's ruby-beginning-of-block, ruby-end-of-block, and backward-up-list, but performing additional movements so that they behave exactly like the enh-ruby-mode's counterparts. In mark-special, it checks if we're currently in a oneline method/class/etc (a case that ruby-mode doesn't handle), and in that case it selects the line and return t to signal that the special case was handled.
+;; These classes abstract away the differences between ruby-mode and
+;; enh-ruby-mode. They implement four methods: up, beginning, end, and
+;; mark-special (to handle specific cases without resorting to the mode tools).
+;; The enh-ruby-mode variant just delegate to enh-ruby-mode's
+;; enh-ruby-beginning-of-block, enh-ruby-end-of-block and enh-ruby-up-sexp, and
+;; returns nil from mark-special to signal that no special case needs to be
+;; handled. The ruby-mode variants delegates to ruby-mode's
+;; ruby-beginning-of-block, ruby-end-of-block, and backward-up-list, but
+;; performing additional movements so that they behave exactly like the
+;; enh-ruby-mode's counterparts. In mark-special, it checks if we're currently
+;; in a oneline method/class/etc (a case that ruby-mode doesn't handle), and in
+;; that case it selects the line and return t to signal that the special case
+;; was handled.
 (defclass evil-ruby-text-objects--enh-ruby-mode-navigator () ())
 (defclass evil-ruby-text-objects--ruby-mode-navigator () ())
 
@@ -67,12 +79,15 @@
   nil)
 
 (defun evil-ruby-text-objects--make-navigator ()
-  "It instantiates a navigator object suitable for the current ruby mode (`ruby-mode` or `enh-ruby-mode`)."
+  "It instantiates a navigator object suitable for the current ruby mode.
+It raises an error if it's not one of the supported
+modes (`ruby-mode` or `enh-ruby-mode`)."
   (cond ((eq major-mode 'enh-ruby-mode) (evil-ruby-text-objects--enh-ruby-mode-navigator))
         ((eq major-mode 'ruby-mode) (evil-ruby-text-objects--ruby-mode-navigator))
         (t (user-error "Evil-ruby-text-objects requires ruby-mode or enh-ruby-mode to be enabled"))))
 
-;; the rest of the functions are used always, and use a navigator instance, which implements the two supported ruby modes.
+;; the rest of the functions are used always, and use a navigator instance,
+;; which implements the two supported ruby modes.
 (defun evil-ruby-text-objects--evil-range (count type keyword &optional inner)
   "Defines a linewise ‘evil-range’ selecting the specified Ruby expression.
 COUNT: number of times it should go up the tree searching for the target
@@ -105,7 +120,10 @@ opening or closing"
     (evil-text-object-make-linewise (evil-range (region-beginning) (region-end) type :expanded t))))
 
 (defmacro evil-ruby-text-objects--define-object (object &optional keyword)
-  "Defines an inner and an outer object. Accepted parameters are the OBJECT name (a string) and optionally a KEYWORD (string or regexp, defaults to the object name). It defines two evil text objects, evil-a-ruby-<OBJECT> (outer), and evil-inner-ruby-<OBJECT> (inner)."
+  "Defines an inner and an outer object.
+Accepted parameters are the OBJECT name (a string) and optionally a KEYWORD
+(string or regexp, defaults to the object name). It defines two evil text
+objects, evil-a-ruby-<OBJECT> (outer), and evil-inner-ruby-<OBJECT> (inner)."
   (let ((keyword (or keyword object))
         (outer-object (intern (concat "evil-a-ruby-" object)))
         (inner-object (intern (concat "evil-inner-ruby-" object))))
