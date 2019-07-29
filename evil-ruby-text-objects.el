@@ -32,6 +32,14 @@
 (require 'evil)
 (require 'eieio)
 
+;; these are the external functions, from the bundled ruby-mode, and from
+;; enh-ruby-mode (only in case it's installed) which are used from this package.
+(declare-function ruby-beginning-of-block "ruby-mode.el")
+(declare-function ruby-end-of-block "ruby-mode.el")
+(declare-function enh-ruby-beginning-of-block "ext:enh-ruby-mode.el")
+(declare-function enh-ruby-end-of-block "ext:enh-ruby-mode.el")
+(declare-function enh-ruby-up-sexp "ext:enh-ruby-mode.el")
+
 ;; These classes abstract away the differences between ruby-mode and
 ;; enh-ruby-mode. They implement four methods: up, beginning, end, and
 ;; mark-special (to handle specific cases without resorting to the mode tools).
