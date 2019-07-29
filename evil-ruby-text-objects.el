@@ -130,7 +130,7 @@ opening or closing"
 (defmacro evil-ruby-text-objects--define-object (object &optional keyword)
   "Defines an inner and an outer object.
 Accepted parameters are the OBJECT name (a string) and optionally a KEYWORD
-(string or regexp, defaults to the object name). It defines two evil text
+\(string or regexp, defaults to the object name). It defines two evil text
 objects, evil-a-ruby-<OBJECT> (outer), and evil-inner-ruby-<OBJECT> (inner)."
   (let ((keyword (or keyword object))
         (outer-object (intern (concat "evil-a-ruby-" object)))
