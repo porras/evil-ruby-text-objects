@@ -84,19 +84,18 @@ INNER: When t, then only the content of the expression is selected but not its
 opening or closing"
   (save-excursion
     (let ((navigator (evil-ruby-text-objects--make-navigator)))
-      (or (evil-ruby-text-objects--mark-special navigator keyword)
-          (progn
-            (skip-syntax-forward " ")
-            (unless (looking-at keyword)
-              (evil-ruby-text-objects--beginning navigator))
-            (dotimes (i count)
-              (while (not (looking-at keyword))
-                (when (bobp) (user-error "Can't find current %s opening" keyword))
-                (evil-ruby-text-objects--up navigator))
-              (unless (= i (- count 1)) ; if it's not the last one
-                (evil-ruby-text-objects--up navigator)))
-            (set-mark (point))
-            (evil-ruby-text-objects--end navigator))))
+      (unless (evil-ruby-text-objects--mark-special navigator keyword)
+        (skip-syntax-forward " ")
+        (unless (looking-at keyword)
+          (evil-ruby-text-objects--beginning navigator))
+        (dotimes (i count)
+          (while (not (looking-at keyword))
+            (when (bobp) (user-error "Can't find current %s opening" keyword))
+            (evil-ruby-text-objects--up navigator))
+          (unless (= i (- count 1)) ; if it's not the last one
+            (evil-ruby-text-objects--up navigator)))
+        (set-mark (point))
+        (evil-ruby-text-objects--end navigator)))
     (when inner
       (search-backward "end")
       (exchange-point-and-mark)
