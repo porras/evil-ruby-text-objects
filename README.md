@@ -1,10 +1,17 @@
 # evil-ruby-text-objects 
 
 [![Build Status](https://travis-ci.com/porras/evil-ruby-text-objects.svg?branch=master)](https://travis-ci.com/porras/evil-ruby-text-objects)
+[![MELPA](https://melpa.org/packages/evil-ruby-text-objects-badge.svg)](https://melpa.org/#/evil-ruby-text-objects)
 
 [Emacs](https://www.gnu.org/software/emacs/) package that adds some text objects and keybindings to work with Ruby code with [Evil](https://github.com/emacs-evil/evil).
 
 It's inspired by [vim-ruby](https://github.com/vim-ruby/vim-ruby/blob/96d5db458f868255393fdc2732d6bef21a45c68f/doc/ft-ruby-plugin.txt#L56-L76)'s `m` text objects and also [vim-textobj-ruby](https://github.com/rhysd/vim-textobj-ruby)'s `r`/`r*`, although it doesn't work exactly the same.
+
+## Installation
+
+You can install `evil-ruby-text-objects` from [MELPA](https://melpa.org/) with the following command:
+
+<kbd>M-x</kbd> `package-install` <kbd>[RET]</kbd> `evil-ruby-text-objects` <kbd>[RET]</kbd>
 
 ## Usage
 
