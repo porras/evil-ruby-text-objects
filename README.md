@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.com/porras/evil-ruby-text-objects.svg?branch=master)](https://travis-ci.com/porras/evil-ruby-text-objects)
 [![MELPA](https://melpa.org/packages/evil-ruby-text-objects-badge.svg)](https://melpa.org/#/evil-ruby-text-objects)
+[![MELPA Stable](https://stable.melpa.org/packages/evil-ruby-text-objects-badge.svg)](https://stable.melpa.org/#/evil-ruby-text-objects)
 
 [Emacs](https://www.gnu.org/software/emacs/) package that adds some text objects and keybindings to work with Ruby code with [Evil](https://github.com/emacs-evil/evil).
 
