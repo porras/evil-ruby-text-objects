@@ -1,4 +1,4 @@
-(require 'evil-ruby-text-objects)
+(require 'evil-ruby-text-objects (f-join (f-dirname (f-this-file)) ".." "evil-ruby-text-objects.el"))
 (require 'evil-test-helpers)
 (require 'enh-ruby-mode)
 
