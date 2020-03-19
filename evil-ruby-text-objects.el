@@ -31,6 +31,7 @@
 
 (require 'evil)
 (require 'eieio)
+(require 'cl-lib)
 
 ;; these are the external functions, from the bundled ruby-mode, and from
 ;; enh-ruby-mode (only in case it's installed) which are used from this package.
