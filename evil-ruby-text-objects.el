@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Keywords: languages
 ;; URL: https://github.com/porras/evil-ruby-text-objects
-;; Package-Requires: ((emacs "25") (evil "1.2.0"))
+;; Package-Requires: ((emacs "25.1") (evil "1.2.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
