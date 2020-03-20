@@ -137,10 +137,12 @@ objects, evil-a-ruby-<OBJECT> (outer), and evil-inner-ruby-<OBJECT> (inner)."
         (outer-object (intern (concat "evil-a-ruby-" object)))
         (inner-object (intern (concat "evil-inner-ruby-" object))))
     `(progn
-       (evil-define-text-object ,outer-object (count &rest unused) ; giving a name to it because of a compiler warning `argument _ not left unused`'
+       (evil-define-text-object ,outer-object (count &rest unused)
+                                        ; giving a name to it because of a compiler warning `argument _ not left unused`
          ,(format "Select a Ruby %s." object)
          (evil-ruby-text-objects--evil-range count type ,keyword))
-       (evil-define-text-object ,inner-object (count &rest unused) ; giving a name to it because of a compiler warning `argument _ not left unused`'
+       (evil-define-text-object ,inner-object (count &rest unused)
+                                        ; giving a name to it because of a compiler warning `argument _ not left unused`
          ,(format "Select the inner content of a Ruby %s." object)
          (evil-ruby-text-objects--evil-range count type ,keyword t)))))
 

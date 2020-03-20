@@ -2,3 +2,4 @@
 dist/
 *.elc
 /README.html
+/*-autoloads.el*
