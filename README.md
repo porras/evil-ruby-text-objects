@@ -66,3 +66,13 @@ All other objects work similarly.
 ## Note about Ruby modes
 
 This package supports both the built-in `ruby-mode` and [`enh-ruby-mode`](https://github.com/zenspider/enhanced-ruby-mode). The implementation differs slightly so if you notice some unexpected behaviour, please file an issue with an example, mentioning which of both Ruby modes you are using.
+
+## Crystal support
+
+This mode can be used to some extent with [Crystal](https://crystal-lang.org/) code, and possibly any other language with syntax similar enough to Ruby, although it can act funny in places where the syntax differs from Ruby, like for example `abstract class`/`def`. Complete support is not a goal of this project, but the basic stuff should work. Please file an issue if you find basic behavior that is not working.
+
+In order to activate it automatically, add this to your config:
+
+```elisp
+(add-hook 'crystal-mode-hook 'evil-ruby-text-objects-mode)
+```

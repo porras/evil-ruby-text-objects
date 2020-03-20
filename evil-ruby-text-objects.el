@@ -89,11 +89,10 @@
 
 (defun evil-ruby-text-objects--make-navigator ()
   "It instantiates a navigator object suitable for the current ruby mode.
-It raises an error if it's not one of the supported
-modes (`ruby-mode' or `enh-ruby-mode')."
+It defaults to the builtin `ruby-mode', so that this mode can be used with
+languages similar to Ruby, such as Crystal."
   (cond ((eq major-mode 'enh-ruby-mode) (evil-ruby-text-objects--enh-ruby-mode-navigator))
-        ((eq major-mode 'ruby-mode) (evil-ruby-text-objects--ruby-mode-navigator))
-        (t (user-error "Evil-ruby-text-objects requires ruby-mode or enh-ruby-mode to be enabled"))))
+        (t (evil-ruby-text-objects--ruby-mode-navigator))))
 
 ;; the rest of the functions are used always, and use a navigator instance,
 ;; which implements the two supported ruby modes.
