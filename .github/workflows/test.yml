@@ -1,0 +1,47 @@
+# taken almost literally from https://github.com/purcell/package-lint/blob/0e27abf2e65340dc1523b27b923650b863472a5a/.github/workflows/test.yml
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    paths-ignore:
+    - '**.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        emacs_version:
+          - 25.1
+          - 25.2
+          - 25.3
+          - 26.1
+          - 26.2
+          - 26.3
+          - snapshot
+        include:
+          - emacs_version: snapshot
+            allow_failure: true
+
+    steps:
+
+    - uses: actions/setup-ruby@v1
+
+    - uses: purcell/setup-emacs@master
+      with:
+        version: ${{ matrix.emacs_version }}
+
+    - uses: conao3/setup-cask@master
+
+    - uses: actions/checkout@v1
+
+    - name: Install dependencies
+      run: make deps
+
+    - name: Run tests
+      run: make test
+
+    - name: Lint package and code
+      run: make check
