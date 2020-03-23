@@ -58,17 +58,29 @@
 (defclass evil-ruby-text-objects--ruby-mode-navigator () ())
 
 (cl-defmethod evil-ruby-text-objects--beginning ((_ evil-ruby-text-objects--ruby-mode-navigator))
+  "Emulate `enh-ruby-beginning-of-block' using `ruby-beginning-of-block'.
+`ruby-beginning-of-block' moves us to the beginning of the line
+where the block begins, we need to move forward to the `do'
+keyword to complete the emulation."
   (ruby-beginning-of-block)
   (re-search-forward "do" (line-end-position) t))
 
 (cl-defmethod evil-ruby-text-objects--end ((_ evil-ruby-text-objects--ruby-mode-navigator))
+  "Emulate `enh-ruby-end-of-block' using `ruby-end-of-block'.
+We move to the end of the block, and then move one word forward
+if we are at the `end' keyword."
   (ruby-end-of-block)
   (when (looking-at "end") (evil-forward-word-begin)))
 
 (cl-defmethod evil-ruby-text-objects--up ((_ evil-ruby-text-objects--ruby-mode-navigator))
+  "Delegate directly to `ruby-mode'."
   (backward-up-list))
 
 (cl-defmethod evil-ruby-text-objects--mark-special ((_ evil-ruby-text-objects--ruby-mode-navigator) keyword)
+  "Manage oneline definition.
+Searches for a oneline KEYWORD (def or class) with a regular
+expression (`enh-ruby-mode' manages this correctly but
+`ruby-mode' doesn't)."
   (when (string-match-p (concat "^\s*" keyword ".*;\s*end\s*$") (thing-at-point 'line))
     (beginning-of-line-text)
     (set-mark (point))
@@ -76,15 +88,20 @@
     t))
 
 (cl-defmethod evil-ruby-text-objects--beginning ((_ evil-ruby-text-objects--enh-ruby-mode-navigator))
+  "Delegate directly to `enh-ruby-mode'."
   (enh-ruby-beginning-of-block))
 
 (cl-defmethod evil-ruby-text-objects--end ((_ evil-ruby-text-objects--enh-ruby-mode-navigator))
+  "Delegate directly to `enh-ruby-mode'."
   (enh-ruby-end-of-block))
 
 (cl-defmethod evil-ruby-text-objects--up ((_ evil-ruby-text-objects--enh-ruby-mode-navigator))
+  "Delegate directly to `enh-ruby-mode'."
   (enh-ruby-up-sexp))
 
 (cl-defmethod evil-ruby-text-objects--mark-special ((_ evil-ruby-text-objects--enh-ruby-mode-navigator) _keyword)
+  "Do nothing.
+\(we don't need to manage any special case in `enh-ruby-mode')."
   nil)
 
 (defun evil-ruby-text-objects--make-navigator ()
