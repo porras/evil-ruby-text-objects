@@ -3,10 +3,11 @@
 name: CI
 
 on:
-  pull_request:
   push:
     paths-ignore:
     - '**.md'
+  schedule:
+    - cron: '0 0 1 */2 *'
 
 jobs:
   build:
@@ -20,14 +21,21 @@ jobs:
           - 26.1
           - 26.2
           - 26.3
+          - 27.1
+          - 27.2
+          - 28.1
+          - 28.2
           - snapshot
         include:
           - emacs_version: snapshot
             allow_failure: true
 
     steps:
-
-    - uses: actions/setup-ruby@v1
+      # enh-ruby mode needs ruby; in principle we don't care much about the
+      # version.
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.0
 
     - uses: purcell/setup-emacs@master
       with:
