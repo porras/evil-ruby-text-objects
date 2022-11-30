@@ -105,7 +105,7 @@ expression (`enh-ruby-mode' manages this correctly but
   nil)
 
 (defun evil-ruby-text-objects--make-navigator ()
-  "It instantiates a navigator object suitable for the current ruby mode.
+  "Instantiate a navigator object suitable for the current ruby mode.
 It defaults to the builtin `ruby-mode', so that this mode can be used with
 languages similar to Ruby, such as Crystal."
   (cond ((eq major-mode 'enh-ruby-mode) (evil-ruby-text-objects--enh-ruby-mode-navigator))
@@ -114,7 +114,7 @@ languages similar to Ruby, such as Crystal."
 ;; the rest of the functions are used always, and use a navigator instance,
 ;; which implements the two supported ruby modes.
 (defun evil-ruby-text-objects--evil-range (count type keyword &optional inner)
-  "Defines a linewise ‘evil-range’ selecting the specified Ruby expression.
+  "Define a linewise ‘evil-range’ selecting the specified Ruby expression.
 COUNT: number of times it should go up the tree searching for the target
 expression (for nested expressions)
 TYPE: managed by ‘evil-range’ and passed as is
@@ -145,9 +145,9 @@ opening or closing"
     (evil-text-object-make-linewise (evil-range (region-beginning) (region-end) type :expanded t))))
 
 (defmacro evil-ruby-text-objects--define-object (object &optional keyword)
-  "Defines an inner and an outer object.
+  "Define an inner and an outer object.
 Accepted parameters are the OBJECT name (a string) and optionally a KEYWORD
-\(string or regexp, defaults to the object name). It defines two evil text
+\(string or regexp, defaults to the object name).  It defines two evil text
 objects, evil-a-ruby-<OBJECT> (outer), and evil-inner-ruby-<OBJECT> (inner)."
   (let ((keyword (or keyword object))
         (outer-object (intern (concat "evil-a-ruby-" object)))
@@ -172,7 +172,7 @@ objects, evil-a-ruby-<OBJECT> (outer), and evil-inner-ruby-<OBJECT> (inner)."
 
 ;;;###autoload
 (define-minor-mode evil-ruby-text-objects-mode
-  "Enables Evil keybindings for ruby text objects"
+  "Enable Evil keybindings for ruby text objects."
   :keymap (make-sparse-keymap)
   (evil-define-key '(operator visual) evil-ruby-text-objects-mode-map
     "am" 'evil-a-ruby-method
